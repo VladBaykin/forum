@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Repository
+//@Repository
 public class PostRepository {
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private final AtomicInteger ids = new AtomicInteger(1);
