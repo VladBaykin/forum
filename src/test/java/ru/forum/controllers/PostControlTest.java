@@ -1,6 +1,7 @@
 package ru.forum.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +16,10 @@ import ru.forum.service.PostService;
 import java.util.GregorianCalendar;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -66,5 +70,19 @@ public class PostControlTest {
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    @WithMockUser
+    public void whenSavePostThenRedirect() throws Exception {
+        this.mockMvc.perform(post("/post/save")
+                .param("name", "Куплю ладу-грант. Дорого.")
+                .param("desc", "за 1кк"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection());
+        ArgumentCaptor<Post> argument = ArgumentCaptor.forClass(Post.class);
+        verify(postService).save(argument.capture());
+        assertEquals("Куплю ладу-грант. Дорого.", argument.getValue().getName());
+        assertEquals("за 1кк", argument.getValue().getDesc());
     }
 }
