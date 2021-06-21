@@ -3,15 +3,17 @@ language: java
 jdk:
   - openjdk11
 
+services:
+  - postgresql
+
+before_install:
+  - psql -c 'create database forum;' -U postgres
+
 sudo: false
 
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-
-env:
-  global:
-    - CODECOV_TOKEN="d277e8df-4a99-4a9d-ad6c-4ffb1d4e4fd7"
 
 notifications:
   email:
@@ -19,3 +21,7 @@ notifications:
       - vladbaykin@gmail.com
     on_success: never # default: change
     on_failure: always # default: always
+
+env:
+  global:
+    - CODECOV_TOKEN="d277e8df-4a99-4a9d-ad6c-4ffb1d4e4fd7"
